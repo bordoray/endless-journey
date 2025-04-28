@@ -1,27 +1,12 @@
-## 開発サーバーの起動
+## Dev in progress
 
-```sh
-# backend
-docker compose up -d
+An upgrade project of fb-insight
+https://bordoray.github.io/facebook-insight
 
-# frontend
-cd frontend
+Goal:
+- Make insights data easy to update using database
 
-# FastAPIのURL
-cat - >.env <<EOF
-BACKEND_URL="http://localhost:8000"
-EOF
+## Current statement
 
-pnpm install
-pnpm dev
-```
-
-- FastAPIおよびPostgreSQLはdocker-composeで起動します
-- SvelteKitアプリケーションはpnpm devで起動します（非コンテナ環境）
-
-### Prismaスキーマの変更時
-
-```sh
-# サーバーは起動した状態で
-DATABASE_URL=postgres://user:password@localhost:5432/postgres uv run prisma migrate dev
-```
+- Backend: DB structure and data try OK
+- Frontend: pending
