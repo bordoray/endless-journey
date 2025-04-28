@@ -33,7 +33,7 @@ class PlaceModel(BaseModel):
 
 @app.get("/places")
 async def get_places(page: int = 1) -> list[PlaceModel]:
-    per_page = 1000
+    per_page = 100000
     try:
         return await prisma.place.find_many(take=per_page, skip=(page - 1) * per_page)
     except prisma_errors.PrismaError as e:
