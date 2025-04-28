@@ -1,0 +1,41 @@
+services:
+  backend:
+    image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+    command:
+      - /bin/bash
+      - -c
+      - |
+        uv sync
+        uv run prisma migrate dev
+        uv run fastapi dev --host 0.0.0.0 src/fastapi_prisma/main.py
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://user:password@postgres:5432/postgres
+    healthcheck:
+      interval: 1s
+      timeout: 5s
+      retries: 20
+      test: 'curl -f http://localhost:8000/health || exit 1'
+  postgres:
+    image: postgres:16.1-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    healthcheck:
+      interval: 1s
+      timeout: 5s
+      retries: 20
+      test: 'PGPASSWORD=$$POSTGRES_PASSWORD pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB || exit 1'
+volumes:
+  postgres-data:
