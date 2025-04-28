@@ -1,10 +1,10 @@
 from datetime import datetime
 
 from fastapi import FastAPI, Response
-from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
 from prisma import Prisma
 from prisma import errors as prisma_errors
-from pydantic import BaseModel
 
 prisma = Prisma()
 
@@ -17,22 +17,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-origins = [
-    "http://localhost:5173",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
 
 class PlaceModel(BaseModel):
     id: int
@@ -62,7 +51,7 @@ class PlacePost(BaseModel):
 @app.post("/places", status_code=201)
 async def create_place(place: PlacePost) -> PlaceModel:
     try:
-        return await prisma.place.create({"title": place.title})
+        return await prisma.place.create({"place": place.place})
     except prisma_errors.PrismaError as e:
         print(e)
         return Response(status_code=400, content="create failed")

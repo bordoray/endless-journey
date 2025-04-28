@@ -10,7 +10,7 @@ path = os.path.join(base, 'scratch', 'first_data.geojson')
 # make post
 def post_to_prisma(data):
     response = requests.post(
-        "http://localhost:8000/todos",
+        "http://127.0.0.1:8000/places",
         json=data
     )
 
@@ -21,12 +21,17 @@ with open(path, 'r', encoding='utf-8') as f:
 
 # Create record to post
 # results = []
+n = 0
 for feature in data['features']:
     props = feature['properties']
     record = {
         'place': props.get('place'),
-        'pic_file': props.get('pic_file'),
+        'latitude': props.get('latitude'),
         'longitude': props.get('longitude'),
-        'latitude': props.get('latitude')
+        'pic_file': props.get('pic_file')
+        
     }
+    if n ==0:
+        print (record)
     post_to_prisma(record)
+    n = n+1
