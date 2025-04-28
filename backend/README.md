@@ -15,4 +15,5 @@ uv run prisma migrate dev
 ```
 
 result
+
 <img width="607" alt="image" src="https://github.com/user-attachments/assets/e994f24a-7f9a-4f5a-ae3f-24b55b39a902" />
