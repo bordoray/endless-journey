@@ -13,6 +13,7 @@ def post_to_prisma(data):
         "http://127.0.0.1:8000/places",
         json=data
     )
+    return response
 
 
 # Read GeoJSON file
@@ -31,7 +32,10 @@ for feature in data['features']:
         'pic_file': props.get('pic_file')
         
     }
-    if n ==0:
-        print (record)
-    post_to_prisma(record)
-    n = n+1
+    res = post_to_prisma(record)
+    # if n ==0:
+    #     print (record)
+    #     res = post_to_prisma(record)
+    #     print(res)
+    #     break
+    # n = n+1

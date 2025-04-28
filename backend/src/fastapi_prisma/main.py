@@ -33,7 +33,7 @@ class PlaceModel(BaseModel):
 
 @app.get("/places")
 async def get_places(page: int = 1) -> list[PlaceModel]:
-    per_page = 10
+    per_page = 1000
     try:
         return await prisma.place.find_many(take=per_page, skip=(page - 1) * per_page)
     except prisma_errors.PrismaError as e:
@@ -49,9 +49,9 @@ class PlacePost(BaseModel):
 
 
 @app.post("/places", status_code=201)
-async def create_place(place: PlacePost) -> PlaceModel:
+async def create_place(data: PlacePost) -> PlaceModel:
     try:
-        return await prisma.place.create({"place": place.place})
+        return await prisma.place.create({"place": data.place,"latitude":data.latitude,"longitude":data.longitude,"pic_file": data.pic_file})
     except prisma_errors.PrismaError as e:
         print(e)
         return Response(status_code=400, content="create failed")
