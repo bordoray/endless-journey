@@ -34,58 +34,62 @@ app.add_middleware(
 async def health():
     return {"status": "ok"}
 
-
-class TodoModel(BaseModel):
+class PlaceModel(BaseModel):
     id: int
-    title: str
-    done: bool
-    createdAt: datetime
-    updatedAt: datetime
+    place: str
+    latitude: float
+    longitude: float
+    pic_file: str
 
 
-@app.get("/todos")
-async def get_todos(page: int = 1) -> list[TodoModel]:
+@app.get("/places")
+async def get_places(page: int = 1) -> list[PlaceModel]:
     per_page = 10
     try:
-        return await prisma.todo.find_many(take=per_page, skip=(page - 1) * per_page)
+        return await prisma.place.find_many(take=per_page, skip=(page - 1) * per_page)
     except prisma_errors.PrismaError as e:
         print(e)
         return Response(status_code=400, content="fetch failed")
 
 
-class TodoPost(BaseModel):
-    title: str
+class PlacePost(BaseModel):
+    place: str
+    latitude: float
+    longitude: float
+    pic_file: str
 
 
-@app.post("/todos", status_code=201)
-async def create_todo(todo: TodoPost) -> TodoModel:
+@app.post("/places", status_code=201)
+async def create_place(place: PlacePost) -> PlaceModel:
     try:
-        return await prisma.todo.create({"title": todo.title})
+        return await prisma.place.create({"title": place.title})
     except prisma_errors.PrismaError as e:
         print(e)
         return Response(status_code=400, content="create failed")
 
 
-@app.delete("/todos/{todo_id}")
-async def delete_todo(todo_id: int):
+@app.delete("/places/{place_id}")
+async def delete_place(place_id: int):
     try:
-        await prisma.todo.delete(where={"id": todo_id})
+        await prisma.place.delete(where={"id": place_id})
         return Response(status_code=204)
     except prisma_errors.PrismaError as e:
         print(e)
         return Response(status_code=400, content="delete failed")
 
 
-class TodoPatch(BaseModel):
-    title: str | None = None
-    done: bool | None = None
+class PlacePatch(BaseModel):
+    place: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+    pic_file: str | None = None
 
 
-@app.patch("/todos/{todo_id}")
-async def update_todo(todo_id: int, todo: TodoPatch) -> TodoModel:
+@app.patch("/places/{place_id}")
+async def update_place(place_id: int, place: PlacePatch) -> PlaceModel:
     try:
-        return await prisma.todo.update(
-            where={"id": todo_id}, data=todo.model_dump(exclude_unset=True)
+        return await prisma.place.update(
+            where={"id": place_id}, data=place.model_dump(exclude_unset=True)
         )
     except prisma_errors.PrismaError as e:
         print(e)

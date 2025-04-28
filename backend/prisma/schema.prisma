@@ -4,14 +4,14 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:db.sqlite3"
 }
 
-model Todo {
-  id        Int      @id @default(autoincrement())
-  title     String
-  done      Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+model Place {
+  id        Int     @id @default(autoincrement())
+  place     String
+  latitude  Float
+  longitude Float
+  pic_file  String
 }
