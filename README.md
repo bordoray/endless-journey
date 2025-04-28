@@ -9,4 +9,5 @@ Goal:
 ## Current statement
 
 - Backend: DB structure and data try OK
+  - https://github.com/bordoray/endless-journey/tree/main/backend
 - Frontend: pending
